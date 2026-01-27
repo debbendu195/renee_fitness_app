@@ -54,7 +54,7 @@ class ForgotPassScreen extends StatelessWidget {
                           bottom: 20,
                         ),
                         CustomText(
-                          text: "Enter your registered email or phone number and we'll send you a link to reset your password.",
+                          text: "Enter your registered email and we'll send you a link to reset your password.",
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: AppColors.white,
@@ -63,8 +63,8 @@ class ForgotPassScreen extends StatelessWidget {
                           bottom: 20,
                         ),
                         CustomFormCard(
-                          title: "EMAIL / PHONE NUMBER",
-                          hintText: "Enter your email or phone number",
+                          title: "EMAIL",
+                          hintText: "Enter your email",
                           titleColor: AppColors.white,
                           controller: TextEditingController(),
                         ),
@@ -73,7 +73,7 @@ class ForgotPassScreen extends StatelessWidget {
                           onTap: () {
                             Get.toNamed(AppRoutes.verifyOtpScreen);
                           },
-                          title: "SEND RESET LINK",
+                          title: "SEND RESET OTP",
                           borderRadius: 30,
                         ),
                         TextButton(

@@ -20,6 +20,7 @@ class AuthController extends GetxController {
   Rx<String> gender = 'Male'.obs;
 
   RxBool isOpen = false.obs;
+  RxBool otpLoading = false.obs;
 
   RxString selectedClass = "Male".obs;
 
@@ -93,9 +94,82 @@ class AuthController extends GetxController {
     gender.value = 'Male';
   }
 
-  RxBool otpLoading = false.obs;
+  // TextControllers for login
+  Rx<TextEditingController> loginEmailController = TextEditingController().obs;
+  Rx<TextEditingController> loginPasswordController = TextEditingController().obs;
 
-  // Function to verify OTP
+  // Loading state for login
+  RxBool loginLoading = false.obs;
+
+  // Login method
+  Future<void> loginUser() async {
+    loginLoading.value = true;
+
+    Map<String, String> body = {
+      "email": loginEmailController.value.text.trim(),
+      "password": loginPasswordController.value.text.trim(),
+    };
+
+    try {
+      var response = await ApiClient.postData(ApiUrl.signIn, jsonEncode(body));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        loginLoading.value = false;
+        refresh();
+
+        Map<String, dynamic> jsonResponse;
+
+        if (response.body is String) {
+          jsonResponse = jsonDecode(response.body);
+        } else {
+          jsonResponse = response.body as Map<String, dynamic>;
+        }
+
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ?? "Login successful",
+          isError: false,
+        );
+
+        var dataMap = jsonResponse['data'] as Map<String, dynamic>;
+        String accessToken = dataMap['accessToken'].toString();
+
+        await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
+
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+        String userId = decodedToken['id'].toString();
+
+        await SharePrefsHelper.setString(AppConstants.userId, userId);
+
+        Get.offAllNamed(AppRoutes.homeScreen);
+      } else {
+        loginLoading.value = false;
+        refresh();
+
+        Map<String, dynamic> errorResponse;
+
+        if (response.body is String) {
+          errorResponse = jsonDecode(response.body);
+        } else {
+          errorResponse = response.body as Map<String, dynamic>;
+        }
+
+        showCustomSnackBar(
+          errorResponse['message']?.toString() ?? "Login failed",
+          isError: true,
+        );
+      }
+    } catch (e) {
+      loginLoading.value = false;
+      refresh();
+      showCustomSnackBar("An error occurred. Please try again.", isError: true);
+      debugPrint("Login Error: $e");
+    }
+  }
+
+  Future<void> forgotPassword() async {
+
+  }
+
   Future<void> verifyOtp({required String screenName}) async {
     otpLoading.value = true;
     refresh();
@@ -111,7 +185,6 @@ class AuthController extends GetxController {
     };
 
     try {
-      // Sending OTP to backend for verification
       var response = await ApiClient.patchData(ApiUrl.verificationOtp, jsonEncode(body));
 
       otpLoading.value = false;
@@ -140,16 +213,11 @@ class AuthController extends GetxController {
         // Save access token
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
 
-        // Decode JWT to get id & role
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         String userId = decodedToken['id'].toString();
-        String userRole = decodedToken['role'].toString();
 
-        // Save user id & role
         await SharePrefsHelper.setString(AppConstants.userId, userId);
-        await SharePrefsHelper.setString(AppConstants.role, userRole);
 
-        // Navigate to login/home screen
         Get.offAllNamed(AppRoutes.homeScreen);
       }
     } catch (e) {

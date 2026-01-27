@@ -5,9 +5,9 @@ class ApiUrl {
 
   /// ================= AUTHENTICATION =================
   static const String signUp = "/user/create_user";
-  // static const String signIn = "/auth/login";
+  static const String signIn = "/auth/login_user";
   //
-  // static const String forgotPassword = "/auth/forgot-password";
+  static const String forgotPassword = "/user/forgot_password";
   static const String verificationOtp = "/user/user_verification";
   // static const String resetPassword = "/auth/reset-password";
   // static const String termsCondition = "/terms-conditions";
@@ -17,6 +17,5 @@ class ApiUrl {
   // static const String changePassword = "/auth/change-password";
   // static const String updateProfile = "/users/update";
   // static const String vendorProfile = "/users/my-profile";
-
 
 }
