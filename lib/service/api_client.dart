@@ -113,7 +113,7 @@ class ApiClient extends GetxService {
     bearerToken = await SharePrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': bearerToken
     };
     try {

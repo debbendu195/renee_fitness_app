@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:renee_flutter_app/view/components/custom_loader/custom_loader.dart';
 import 'package:renee_flutter_app/view/components/custom_pin_code/custom_pin_code.dart';
 import '../../../../core/app_routes/app_routes.dart';
+import '../../../../utils/ToastMsg/toast_message.dart';
 import '../../../../utils/app_colors/app_colors.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_royel_appbar/custom_royel_appbar.dart';
 import '../../../components/custom_text/custom_text.dart';
+import '../controller/auth_controller.dart';
 
 class VerifyOtpScreen extends StatelessWidget {
-  const VerifyOtpScreen({super.key});
+  VerifyOtpScreen({super.key});
+  final signUp = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
+
     return Scaffold(
       appBar: CustomRoyelAppbar(leftIcon: true),
       body: SingleChildScrollView(
@@ -55,23 +61,26 @@ class VerifyOtpScreen extends StatelessWidget {
                           bottom: 20,
                         ),
                         CustomText(
-                          text:
-                              "Enter the 4-digit code sent to your\nemail or phone number.",
+                          text: "Enter the 6-digit code sent to your\nemail or phone number.",
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: AppColors.white,
                           textAlign: TextAlign.center,
                           bottom: 20,
                         ),
-                        CustomPinCode(controller: TextEditingController()),
-                        SizedBox(height: 20,),
-                        CustomButton(
-                          onTap: () {
-                            Get.toNamed(AppRoutes.setNewPassword);
-                          },
-                          title: "VERIFY",
-                          borderRadius: 30,
-                        ),
+                        CustomPinCode(controller: authController.otpController.value),
+                        SizedBox(height: 20),
+                        Obx(() {
+                          return authController.otpLoading.value
+                              ? CustomLoader()
+                              : CustomButton(
+                            onTap: () {
+                              authController.verifyOtp(screenName: signUp);
+                            },
+                            title: "VERIFY",
+                            borderRadius: 30,
+                          );
+                        }),
                         SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -18,7 +18,7 @@ class CustomPinCode extends StatelessWidget {
       child: PinCodeTextField(
         keyboardType: TextInputType.number,
         appContext: context,
-        length: 4,
+        length: 6,
         enableActiveFill: true,
         animationType: AnimationType.fade,
         animationDuration: Duration(milliseconds: 300),
@@ -27,7 +27,7 @@ class CustomPinCode extends StatelessWidget {
           shape: PinCodeFieldShape.box,
           borderRadius: BorderRadius.circular(8),
           fieldHeight: 60,
-          fieldWidth: size.width * 0.14,
+          fieldWidth: size.width * 0.10,
           inactiveColor: AppColors.black_05,
           activeColor: AppColors.white_50, // active color
           activeFillColor: AppColors.white_50,
